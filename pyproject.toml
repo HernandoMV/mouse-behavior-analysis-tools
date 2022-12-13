@@ -19,6 +19,16 @@ classifiers = [
     "License :: OSI Approved :: BSD License",
 ]
 
+dependencies = [
+    "numpy",
+    "pandas",
+    "scipy",
+    "IPython",
+    "matplotlib",
+    "seaborn",
+    "scikit-learn"
+]
+
 [project.urls]
 homepage = "https://github.com/HernandoMV/mouse-behavior-analysis-tools"
 bug_tracker = "https://github.com/HernandoMV/mouse-behavior-analysis-tools/issues"

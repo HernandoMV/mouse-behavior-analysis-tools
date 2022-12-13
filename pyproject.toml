@@ -1,0 +1,100 @@
+[project]
+name = "mouse-behavior-analysis-tools"
+authors = [{name = "Hernando M Vergara", email= "hvergarabio@gmail.com"}]
+description = "set of tools to analyse the behavior of mice, coded by Hernando M Vergara"
+readme = "README.md"
+requires-python = ">=3.8.0"
+dynamic = ["version"]
+
+license = {text = "BSD-3-Clause"}
+
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Operating System :: OS Independent",
+    "License :: OSI Approved :: BSD License",
+]
+
+[project.urls]
+homepage = "https://github.com/HernandoMV/mouse-behavior-analysis-tools"
+bug_tracker = "https://github.com/HernandoMV/mouse-behavior-analysis-tools/issues"
+documentation = "https://github.com/HernandoMV/mouse-behavior-analysis-tools"
+source_code = "https://github.com/HernandoMV/mouse-behavior-analysis-tools"
+user_support = "https://github.com/HernandoMV/mouse-behavior-analysis-tools/issues"
+
+[project.optional-dependencies]
+dev = [
+	"pytest",
+	"pytest-cov",
+	"coverage",
+	"tox",
+	"black",
+   	"isort",
+    "mypy",
+	"pre-commit",
+	"flake8",
+ 	"setuptools_scm",
+]
+
+
+
+[build-system]
+requires = [
+    "setuptools>=45",
+    "wheel",
+    "setuptools_scm[toml]>=6.2",
+]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+include = ["mouse_behavior_analysis_tools*"]
+exclude = ["tests*"]
+
+[tool.pytest.ini_options]
+addopts = "--cov=mouse_behavior_analysis_tools"
+
+[tool.black]
+target-version = ['py38', 'py39', 'py310']
+skip-string-normalization = false
+line-length = 79
+exclude = '''
+(
+  /(
+      \.eggs
+    | \.git
+    | \.hg
+    | \.mypy_cache
+    | \.tox
+    | \.venv
+    | _build
+    | buck-out
+    | build
+    | dist
+    | examples
+  )/
+)
+'''
+
+[tool.isort]
+profile = "black"
+line_length = 79
+
+[tool.setuptools_scm]
+
+[tool.check-manifest]
+ignore = [
+  "*.yaml",
+  ".bumpversion.cfg",
+  "tox.ini",
+  "tests/*",
+  "tests/test_unit/*",
+  "tests/test_integration/*",
+  ".flake8"
+]

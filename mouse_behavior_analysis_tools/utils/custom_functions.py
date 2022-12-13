@@ -18,7 +18,8 @@ from mouse_behavior_analysis_tools.utils.misc_utils import update_progress
 
 
 def first_diff_zero(array):
-    # define a function that returns only those indices of a binary! vector (0 or 1)
+    # define a function that returns only those indices of a binary!
+    # vector (0 or 1)
     # where some values are first different than 0
     # create a new vector that is the same but shifted
     # move everything one space forward
@@ -68,7 +69,8 @@ def BpodDatesToTime(inputDates):
 
 
 def PsychPerformance(trialsDif, sideSelected):
-    # function to calculate psychometric performance and fit logistic regression to the data
+    # function to calculate psychometric performance and
+    # fit logistic regression to the data
     # returns a dictionary
 
     if trialsDif.any():  # in case an empty thing is passed
@@ -81,7 +83,8 @@ def PsychPerformance(trialsDif, sideSelected):
                 trialsDif[nan_mask, np.newaxis], sideSelected[nan_mask]
             )
         else:
-            # in case a model cannot be fitted (e.g. mouse always goes to the left)
+            # in case a model cannot be fitted
+            # (e.g. mouse always goes to the left)
             # fit model on dummy data
             clf = LogisticRegressionCV(cv=3).fit(
                 np.array([0, 0, 0, 100, 100, 100]).reshape(-1, 1),
@@ -155,7 +158,8 @@ def generate_fake_data(trialsDif, sideSel):
 def BootstrapPerformances(
     trialsDif, sideSelected, ntimes, prediction_difficulties
 ):
-    # Bootstrap data and return logistic regression predictions for each sampled model
+    # Bootstrap data and return logistic regression
+    # predictions for each sampled model
     # remove nans
     nan_mask = ~(np.isnan(sideSelected) | np.isnan(trialsDif))
     difficulties = trialsDif[nan_mask]
@@ -173,7 +177,8 @@ def BootstrapPerformances(
                 100 * clf_fake.predict_proba(prediction_difficulties)[:, 1]
             )
         except Exception:
-            # in case a model cannot be fitted (e.g. mouse always goes to the left)
+            # in case a model cannot be fitted
+            # (e.g. mouse always goes to the left)
             # fit model on dummy data
             clf_fake = LogisticRegressionCV(cv=3).fit(
                 np.array([0, 0, 0, 100, 100, 100]).reshape(-1, 1),
@@ -190,7 +195,7 @@ def SessionDataToDataFrame(
     # each trial is an entry on the dataframe
 
     # if the session is empty output a message
-    if not "nTrials" in SessionData:
+    if "nTrials" not in SessionData:
         print("Session is empty")
         return pd.DataFrame()
 
@@ -256,7 +261,8 @@ def SessionDataToDataFrame(
         len(protocols) == numberOfTrials, len(stimulations) == numberOfTrials
     ):
         print(
-            "protocols and/or stimulations length do not match with the number of trials"
+            "protocols and/or stimulations length do\
+            not match with the number of trials"
         )
         return pd.DataFrame()
     CenterPortDuration = [x["GUI"]["CenterPortDuration"] for x in ts]
@@ -484,7 +490,8 @@ def AnalyzeSwitchTrials_for_sides(df):
     return pd.concat(sessionsInfo, ignore_index=True)
 
 
-# function to process the data of an experiment for psychometric performance plots:
+# function to process the data of an experiment
+# for psychometric performance plots:
 def PP_ProcessExperiment(SessionData, bootstrap=None, error_bars=None):
     # SessionData is a dataframe that needs to have the following column names:
     # 'TrialHighPerc'
@@ -548,7 +555,8 @@ def getEBdata(SessionData):
 
 def timeDifferences(listOfDates):
     """
-    Return the absolute time, in days, of elements in a list of dates, related to the first
+    Return the absolute time, in days, of elements in a list of dates,
+    related to the first
     Assumes data is in order (would return negative values otherwise)
     :param listOfDates: list of size X of dates. Format: YYYYMMDD_HHMMSS
     :return: array of size X of absolute time
@@ -582,18 +590,19 @@ def timeDifferences(listOfDates):
 
 def RBias(FirstPokes, FirstPokesCorrect):
     """
-    %Returns the bias to the right
-    % FirstPokes is a vector of 1s and 2s (Left or Right), indicating the poked port
-    % FirstPokesCorrect is a 0 and 1 vector (wrong or correct poke)
-    % Both could have NaN values
+    Returns the bias to the right
+    FirstPokes is a vector of 1s and 2s (Left or Right), indicating
+    the poked port
+    FirstPokesCorrect is a 0 and 1 vector (wrong or correct poke)
+    Both could have NaN values
 
-    % Returns from -1 to 1. 0 Being not biased, 1 being Right-biased, and
-    % -1 being left-biased. It is a conservative function. E.g, in a 50-50
-    % trial chance, and being totally biased to one side, only half of the
-    % trials would be wrong, so the function would output +/-0.5.
+    Returns from -1 to 1. 0 Being not biased, 1 being Right-biased, and
+    -1 being left-biased. It is a conservative function. E.g, in a 50-50
+    trial chance, and being totally biased to one side, only half of the
+    trials would be wrong, so the function would output +/-0.5.
 
-    % Correct trials based on proportion of wrong pokes
-    % Determine the proportion of wrong pokes to the right side
+    Correct trials based on proportion of wrong pokes
+    Determine the proportion of wrong pokes to the right side
     """
     WrongSides = FirstPokes[FirstPokesCorrect == 0]
     if len(WrongSides) < 1:
@@ -650,8 +659,9 @@ def MidPortWait(df):
     return PortTime
 
 
-# quantify the time they take to initiate a trial (from trialstart to center poke in)
 def CalculateTrialInitiationTime(df):
+    # quantify the time they take to initiate a trial
+    # (from trialstart to center poke in)
     # the first time they poke
     try:
         return float(df.TrialEvents["Port2In"][0])
@@ -727,7 +737,8 @@ def get_new_files(filelist, existing_dates):
 
 def split_files_into_old_and_new(filelist, existing_dates):
     """
-    Compares dates in files to a datetime dataset to split them into new files and old files
+    Compares dates in files to a datetime dataset to split them
+    into new files and old files
         :param filelist: list of full paths to bpod files
         :type filelist: list of strings
         :param existing_dates: time objects in datetime format
@@ -773,7 +784,8 @@ def trials_per_minute(trial_index, trial_start_timestamp):
     """
     function to calculate the speed of the mouse in trials per minute
     param trial_index: pandas.core.series.Series with the trial index
-    param trial_start_timestamp: pandas.core.series.Series with the trial start time in seconds
+    param trial_start_timestamp: pandas.core.series.Series with the trial
+    start time in seconds
     returns a value which is the trials per minute
     """
     lrmodel = LinearRegression().fit(
@@ -965,7 +977,8 @@ def get_shuffled_means_difference_df(df_colsel, hue_order, nsh):
     shuff_res = []
 
     for i in range(nsh):
-        # shuffle the list of groups by assigning a probability for each mouse to be in a group based on the real ratio
+        # shuffle the list of groups by assigning a probability for each mouse
+        # to be in a group based on the real ratio
         exp_grs = generate_eg(n_an, cb_prob, hue_order)
         # create a diccionary
         egs_dict = dict(zip(df_colsel.AnimalID.unique(), exp_grs))
@@ -1004,7 +1017,8 @@ def get_shuffled_means_difference_global_significance(
     global_sig = np.empty((nsh, len(quants_to_test)), dtype=bool)
     # loop over shuffle data
     for i in range(nsh):
-        # shuffle the list of groups by assigning a probability for each mouse to be in a group based on the real ratio
+        # shuffle the list of groups by assigning a probability for each mouse
+        # to be in a group based on the real ratio
         exp_grs = generate_eg(n_an, cb_prob, hue_order)
         # create a diccionary
         egs_dict = dict(zip(df_colsel.AnimalID.unique(), exp_grs))
@@ -1039,7 +1053,8 @@ def get_random_choices_for_optostimulation(df, ntimes):
     data = np.empty([len(pd.unique(df["SessionID"])), 3], dtype=object)
 
     for i, session in enumerate(pd.unique(df["SessionID"])):
-        # generate the random dataset, and save it to a general dataframe for later use
+        # generate the random dataset, and save it to a general
+        # dataframe for later use
         session_df = df[df["SessionID"] == session]
         roc = get_random_optolike_choices(df=session_df, n_times=ntimes)
         _, odf = splitOpto(session_df)
@@ -1066,7 +1081,8 @@ def get_random_choices_for_optostimulation(df, ntimes):
 def calculate_differences_with_random_optostimulation(
     otl_df, random_opto_df, n_times
 ):
-    # Calculate the differences between the random choices and the opto ones to measure the bias
+    # Calculate the differences between the random choices and the
+    # opto ones to measure the bias
 
     random_opto_df["bias"] = None
     random_opto_df["bias_mean"] = None
@@ -1103,7 +1119,8 @@ def calculate_differences_with_random_optostimulation(
 
 
 def add_info_and_contralateral_bias(oal_df, random_opto_df):
-    # add the side in which stimulation happened, and translate the bias to contralateral / ipsilateral
+    # add the side in which stimulation happened,
+    # and translate the bias to contralateral / ipsilateral
     random_opto_df["stimulated_side"] = None
     random_opto_df["contralateral_bias"] = None
     # Get a column with the mouse name
@@ -1127,8 +1144,11 @@ def add_info_and_contralateral_bias(oal_df, random_opto_df):
         random_opto_df.at[session_idx, "AnimalID"] = mouse_name
         random_opto_df.at[session_idx, "Genotype"] = mouse_name.split("-")[0]
 
-        # bias is the normal minus the opto. This means that a positive value is a leftwards bias of the opto trials
-        # this is good as a contralateral bias for the trials in which optostimulation occurs in the right side
+        # bias is the normal minus the opto.
+        # This means that a positive value is a leftwards bias
+        # of the opto trials
+        # this is good as a contralateral bias for the trials in which
+        # optostimulation occurs in the right side
         # flip the sign of the ones where stimulation happens on the left
         if stim_side == "Right":
             random_opto_df.at[
@@ -1169,8 +1189,10 @@ def get_random_dataframe_for_optostimulation(oal_df, n_times):
 
 def difficulty_for_bias(mouse_line, stimulated_side):
     # function to determine which difficulty to look at
-    # create a logic table in order to find which difficulty to look at when calculating the bias
-    # this depends on the contingency, on the mouse line, and on the the fiber placement
+    # create a logic table in order to find which difficulty
+    # to look at when calculating the bias
+    # this depends on the contingency, on the mouse line,
+    # and on the the fiber placement
 
     # expected movements given the sound (difficulty)
     set_contingency = {"Right": 2.0, "Left": 98.0}
@@ -1179,7 +1201,8 @@ def difficulty_for_bias(mouse_line, stimulated_side):
     bias_expectation = {"D1opto": "ipsi", "D2opto": "contra"}
 
     # logical table for what to expect given ipsi/contra
-    # e.g. if you expect an ipsi bias and the fiber is on the right, you wanna look at the left movements
+    # e.g. if you expect an ipsi bias and the fiber is on the right,
+    # you wanna look at the left movements
     # -----------------------------
     #           |   Right   Left
     #           |-----------------
@@ -1218,7 +1241,8 @@ def significance_calculator(panda_series):
 
 def get_simplified_dataframe_for_optostimulation(random_opto_df):
 
-    # columns: animal_id | genotype | session_performance | contralateral_bias_exp
+    # columns: animal_id | genotype
+    #          | session_performance | contralateral_bias_exp
     animal_id_list = []
     genotype_list = []
     session_performance_list = []
@@ -1259,7 +1283,8 @@ def get_fit_coefs(df):
 def get_dicctionary_of_regressions_optostimulation(
     simplified_df, shuffle_times=100, xs=range(50, 100)
 ):
-    # calculate slopes and generate shuffles of biases per mouse to get the significance for each individual
+    # calculate slopes and generate shuffles of biases
+    # per mouse to get the significance for each individual
     # save all in a diccionary
     reg_dicc = {
         "animals": [],
@@ -1459,8 +1484,10 @@ def get_random_biases(df, n_times, it, aot):
 def get_dopamine_optostimulation_differences_dataframe(
     dao_df, ini_trials, ao_trials, n_times
 ):
-    # Generate another dataset for every session containing information about the difference between
-    # the optostimulated trials and the normal ones, as well as random differences, calculated
+    # Generate another dataset for every session containing information
+    # about the difference between
+    # the optostimulated trials and the normal ones,
+    # as well as random differences, calculated
     # shuffling the trial indexes
     BRS = ["tStr", "NAc"]
     PS = ["Left", "Right"]
@@ -1599,7 +1626,8 @@ def merge_repeated_cases_for_dopamine_optostimulation(opto_df_sel):
     # Combine those cases
     for case in equal_indexes:
         sub_df = opto_df_sel.loc[case].copy()
-        # create new instance to add to the dataframe, initiating it in the first index of the set
+        # create new instance to add to the dataframe,
+        # initiating it in the first index of the set
         new_element = sub_df.iloc[0].copy()
         # change relevant values
         new_element.SessionID = "merge"

@@ -2,7 +2,7 @@
 from numpy.core.numeric import NaN
 import numpy as np
 import matplotlib.pyplot as plt
-from math import *
+import math
 import pandas as pd
 import mouse_behavior_analysis_tools.utils.custom_functions as cuf
 import seaborn as sns
@@ -41,7 +41,7 @@ def summary_figure_joystick(mydict, subplot_time_length=300):
         mydict["Moving_az"].shape[0] - 1
     ]
     duration = final_time - init_time
-    number_of_subplots = int(floor(duration / subplot_time_length + 1))
+    number_of_subplots = int(math.floor(duration / subplot_time_length + 1))
 
     fig, axs = plt.subplots(
         number_of_subplots,
@@ -233,7 +233,8 @@ def summary_plot(
     dfToPlot, AnimalDF, ax, top_labels=["Stimulation", "Muscimol"]
 ):
     """
-    Generates a matrix plot with information regarding each particular session on the top
+    Generates a matrix plot with information regarding
+    each particular session on the top
     """
     sns.set(style="white")
     sp = sns.heatmap(
@@ -247,7 +248,8 @@ def summary_plot(
         vmax=100,
     )
     # TODO: check that the size is proportional (area vs radius)
-    # recalculate the number of trials as some might get grouped if they are on the same day.
+    # recalculate the number of trials as some might
+    # get grouped if they are on the same day.
     # Do all below with the dataframe
 
     # The protocols is the default that gets plotted
@@ -312,7 +314,8 @@ def summary_plot(
 def reg_in_ax(X, Y, ax, legloc):
     # plots a regression in the axes
 
-    ### solution with sklearn, deprecated as pvalues are easy to calculate with stats
+    # solution with sklearn, deprecated as pvalues
+    # are easy to calculate with stats
     """
     # fit model
     regr = LinearRegression()
@@ -323,7 +326,7 @@ def reg_in_ax(X, Y, ax, legloc):
     # r score:
     r_sq = regr.score(X[:, np.newaxis], Y)
     """
-    ### solution with stats
+    # solution with stats
     slope, intercept, r_value, p_value, std_err = stats.linregress(X, Y)
     Xpr = np.linspace(np.min(X), np.max(X), 30)
     Ypr = Xpr * slope + intercept

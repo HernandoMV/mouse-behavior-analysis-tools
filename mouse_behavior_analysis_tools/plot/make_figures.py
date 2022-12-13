@@ -411,7 +411,7 @@ def make_figure_muscimol_psychometric(PP_array, muscond_text, colorlist):
         labelbottom="on",
     )
 
-    L = plt.legend(loc="upper left", frameon=False)
+    plt.legend(loc="upper left", frameon=False)
     # L.get_texts()[0].set_text('Saline (str tail)')
     # L.get_texts()[1].set_text('Muscimol (str tail)')
     # L.get_texts()[2].set_text('Muscimol (DMS)')
@@ -526,7 +526,8 @@ def make_figure_optoinhibition_after_learning_batch(random_opto_df):
         for patch in bp["boxes"]:
             patch.set(facecolor="white")
 
-        # random expectation. Mean at 0 by definition. Use the bias_std to sample from
+        # random expectation. Mean at 0 by definition.
+        # Use the bias_std to sample from
         # do one instance only
         random_means = []
         for session in sessions_used[i]:
@@ -602,7 +603,8 @@ def make_figure_optoinhibition_after_learning_batch(random_opto_df):
 
 
 def make_figure_optoinhibition_after_learning_curves(oal_df, random_opto_df):
-    # Plot the data with the error bars for the random sampling, and the custom fitting
+    # Plot the data with the error bars for the random sampling,
+    # and the custom fitting
     ColorList = ["powderblue", "plum"]
     normal_color = "gray"
     LabelList = ["left stimulation", "right stimulation"]
@@ -1005,7 +1007,8 @@ def make_figure_optoinhibition_significant_sessions(sess_df):
     # set labels
     ax.set_ylabel("Percentage of biased sessions", fontsize=20)
     ax.set_xlabel("Task performance (% of correct choices)", fontsize=20)
-    # ax.set_title('Optoinhibition effects increase through learning', fontsize=25)
+    # ax.set_title('Optoinhibition effects increase
+    # through learning', fontsize=25)
 
     # ax.legend()
     for tick in ax.xaxis.get_major_ticks():
@@ -1024,7 +1027,8 @@ def make_figure_opto_da_all_mice(
     dao_df, ini_trials, ao_trials, example_session
 ):
 
-    # Plot the data with the error bars for the random sampling, and the custom fitting
+    # Plot the data with the error bars for the random sampling,
+    # and the custom fitting
     BRS = ["tStr", "NAc"]
     PS = ["Left", "Right"]
     PI = ["Center", "Side"]

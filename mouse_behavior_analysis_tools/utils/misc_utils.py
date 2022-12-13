@@ -1,7 +1,7 @@
 from IPython.display import clear_output
 
 
-def update_progress(progress, head = ''):
+def update_progress(progress, head=""):
     bar_length = 20
     if isinstance(progress, int):
         progress = float(progress)
@@ -13,6 +13,7 @@ def update_progress(progress, head = ''):
         progress = 1
     block = int(round(bar_length * progress))
     clear_output(wait=True)
-    text = head + " - Progress: [{0}] {1:.1f}%".format("#" * block + "-" * (bar_length - block),
-                                                       progress * 100)
+    text = head + " - Progress: [{0}] {1:.1f}%".format(
+        "#" * block + "-" * (bar_length - block), progress * 100
+    )
     print(text)

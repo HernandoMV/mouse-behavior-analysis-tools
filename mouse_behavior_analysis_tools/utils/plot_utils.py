@@ -1,14 +1,16 @@
 # plot_utils
-from numpy.core.numeric import NaN
-import numpy as np
-import matplotlib.pyplot as plt
 import math
+import random
+
+import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
-import mouse_behavior_analysis_tools.utils.custom_functions as cuf
 import seaborn as sns
 from matplotlib.lines import Line2D
+from numpy.core.numeric import NaN
 from scipy import stats
-import random
+
+import mouse_behavior_analysis_tools.utils.custom_functions as cuf
 
 
 def axvlines(xs, ax=None, **plot_kwargs):

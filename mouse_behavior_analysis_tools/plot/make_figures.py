@@ -1,15 +1,15 @@
-import numpy as np
-import matplotlib.pyplot as plt
 import math
-import seaborn as sns
-import pandas as pd
 import random
+
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import seaborn as sns
 from scipy import stats
 
-from mouse_behavior_analysis_tools.utils import plot_utils
-from mouse_behavior_analysis_tools.utils.misc_utils import update_progress
-from mouse_behavior_analysis_tools.utils import model_utils
 from mouse_behavior_analysis_tools.utils import custom_functions as cuf
+from mouse_behavior_analysis_tools.utils import model_utils, plot_utils
+from mouse_behavior_analysis_tools.utils.misc_utils import update_progress
 
 
 def make_figure_performance_trials_animals_bin(df_to_plot):

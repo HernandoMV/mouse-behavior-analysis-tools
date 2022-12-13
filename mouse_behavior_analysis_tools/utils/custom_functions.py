@@ -1,18 +1,19 @@
 # custom_functions.py
 
-import numpy as np
-import re
-import ntpath
-from sklearn.linear_model import LogisticRegressionCV, LinearRegression
-import pandas as pd
 import datetime
-from itertools import chain, compress
+import ntpath
+import random
+import re
 import sys
+from itertools import chain, compress
+
+import numpy as np
+import pandas as pd
 
 # import glob
 # import socket
 import scipy.optimize as opt
-import random
+from sklearn.linear_model import LinearRegression, LogisticRegressionCV
 
 from mouse_behavior_analysis_tools.utils.misc_utils import update_progress
 

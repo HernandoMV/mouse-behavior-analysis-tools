@@ -713,12 +713,15 @@ def make_figure_optoinhibition_after_learning_curves(oal_df, random_opto_df):
             labelleft="on",
             labelbottom="on",
         )
-        if not ax.is_first_col():
-            ax.set_ylabel("")
-            ax.set_yticks([])
-        if not ax.is_last_row():
-            ax.set_xlabel("")
-            ax.set_xticks([])
+        try:
+            if not ax.is_first_col():
+                ax.set_ylabel("")
+                ax.set_yticks([])
+            if not ax.is_last_row():
+                ax.set_xlabel("")
+                ax.set_xticks([])
+        except AttributeError:
+            pass
 
         ax.set_ylim(-2.0, 102.0)
         ax.legend(bbox_to_anchor=(1.05, 1), loc=0, borderaxespad=0.0)
@@ -1087,12 +1090,15 @@ def make_figure_opto_da_all_mice(
                 labelleft="on",
                 labelbottom="on",
             )
-            if not ax.is_first_col():
-                ax.set_ylabel("")
-                ax.set_yticks([])
-            if not ax.is_last_row():
-                ax.set_xlabel("")
-                ax.set_xticks([])
+            try:
+                if not ax.is_first_col():
+                    ax.set_ylabel("")
+                    ax.set_yticks([])
+                if not ax.is_last_row():
+                    ax.set_xlabel("")
+                    ax.set_xticks([])
+            except AttributeError:
+                pass
 
             ax.set_ylim(-2.0, 102.0)
             # ax.legend(bbox_to_anchor=(1.05, 1), loc=0, borderaxespad=0.)

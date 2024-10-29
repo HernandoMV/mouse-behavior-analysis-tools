@@ -1643,7 +1643,8 @@ def merge_repeated_cases_for_dopamine_optostimulation(opto_df_sel):
         # remove old indexes
         opto_df_sel.drop(case, inplace=True)
         # add new row
-        opto_df_sel = opto_df_sel.append(new_element)
+        # opto_df_sel = opto_df_sel.append(new_element)
+        opto_df_sel = pd.concat([opto_df_sel, new_element], ignore_index=True)
     opto_df_sel.sort_index(inplace=True)
 
     return opto_df_sel

@@ -58,7 +58,81 @@ def make_figure_performance_trials_animals_bin(df_to_plot):
     return fig
 
 
+
 def make_figure_performance_trials_animals_model(
+    df_to_plot, fit_df
+):
+
+    ans_list = np.sort(df_to_plot.AnimalID.unique())
+    num_ans = len(ans_list)
+    x = np.linspace(1, 5000)
+
+    fig, axs = plt.subplots(
+        math.ceil(num_ans / 3),
+        3,
+        figsize=(15, num_ans),
+        facecolor="w",
+        edgecolor="k",
+        sharey=True,
+        sharex=True,
+    )
+    fig.subplots_adjust(hspace=0.2, wspace=0.2)
+    axs = axs.ravel()
+    for ax in axs:
+        ax.axis("off")
+    # process data from all animals
+    for counter, animal in enumerate(ans_list):
+        ax = axs[counter]
+        data = df_to_plot[df_to_plot.AnimalID == animal][
+            [
+                "CumulativeTrialNumberByProtocol",
+                "CurrentPastPerformance100",
+                "SessionID",
+            ]
+        ].dropna()
+        linetp = [
+            x,
+            model_utils.weibull_func(
+                x,
+                *[
+                    fit_df[fit_df.AnimalID == animal].a.iloc[0],
+                    fit_df[fit_df.AnimalID == animal].l.iloc[0],
+                    fit_df[fit_df.AnimalID == animal].s.iloc[0],
+                ],
+            ),
+        ]
+        linetpsig = [
+            x,
+            model_utils.sigmoid_func_sc(
+                x,
+                *[
+                    fit_df[fit_df.AnimalID == animal].sig1.iloc[
+                        0
+                    ],
+                    fit_df[fit_df.AnimalID == animal].sig2.iloc[0],
+                    fit_df[fit_df.AnimalID == animal].sig3.iloc[0],
+                ],
+            ),
+        ]
+
+        ec = df_to_plot[
+            df_to_plot.AnimalID == animal
+        ].ExperimentalGroup.unique()[0]
+        ax_title = ec + ": " + animal
+
+        plot_utils.plot_trials_over_learning(ax, data, linetpsig, ax_title)
+        # plot_trials_over_learning(ax, data, linetpsig, '')
+        ax.get_legend().remove()
+
+        plt.tight_layout()
+
+        update_progress(counter / num_ans)
+
+    update_progress(1)
+    return fig
+
+
+def make_figure_performance_trials_animals_model_DEPRECATED(
     df_to_plot, fit_df, der_max_dir
 ):
 
@@ -182,7 +256,7 @@ def make_figure_learning_parameters_between_groups(
         # ax.yaxis.set_ticks_position('left')
         ax.xaxis.set_ticks([])
         ax.xaxis.set_visible(False)
-        ax.get_legend().remove()
+        # ax.get_legend().remove()
 
     # add statistics
     for i, ax in enumerate(axs):
@@ -418,8 +492,210 @@ def make_figure_muscimol_psychometric(PP_array, muscond_text, colorlist):
 
     return fig
 
-
 def make_figure_optoinhibition_after_learning_batch(random_opto_df):
+    exp_means = []
+    cont_sds = []
+
+    jitter = 0.3
+    alpha = 1
+    spread = jitter * 1.6
+    mice_cohorts = ["D1opto", "D2opto"]
+    colors = ["skyblue", "olivedrab"]
+    labels_for_legend = ["D1-Arch", "D2-Arch"]
+
+    fig, axs = plt.subplots(
+        1, len(mice_cohorts), figsize=(4 * len(mice_cohorts), 8), sharey=True
+    )
+
+    axs = axs.ravel()
+    for i, ax in enumerate(axs):
+        ax.axhline(0, color="grey", linestyle="--")
+        ax.set_title(labels_for_legend[i], fontsize=20)
+        ax.set_xticks([])
+        ax.set_xlim([-jitter * 1.2, jitter * 3])
+        # get rid of the frame
+        for spine in ax.spines.values():
+            spine.set_visible(False)
+
+        # for tick in ax.yaxis.get_major_ticks():
+        #     tick.label.set_fontsize(14)
+
+        xmin, _ = axs[0].get_xaxis().get_view_interval()
+        ax.plot((xmin, xmin), (-60, 40), color="black", linewidth=1)
+
+    axs[0].set_ylabel("contralateral bias", fontsize=15)
+
+    jit_list = []
+
+    # plot stds
+    for session in pd.unique(random_opto_df.SessionID):
+        session_idx = random_opto_df.index[
+            random_opto_df.SessionID == session
+        ].item()
+        cohort = random_opto_df.loc[session_idx].Genotype
+        ax = axs[mice_cohorts.index(cohort)]
+        st_t_idx = 0
+        sh_d = random_opto_df.loc[session_idx].contralateral_bias
+        sh_std = random_opto_df.loc[session_idx].bias_std
+        imp_jit = random.uniform(-jitter, jitter)
+        x_pos = st_t_idx + imp_jit
+        jit_list.append(x_pos)
+
+        # stds
+        ax.plot(
+            [x_pos, x_pos],
+            [sh_d - sh_std, sh_d + sh_std],
+            color=colors[mice_cohorts.index(cohort)],
+            linewidth=3,
+            alpha=alpha,
+        )
+
+    counter = 0
+    # plot means on top
+    mean_vals = [[], []]
+    sessions_used = [[], []]
+    for session in pd.unique(random_opto_df.SessionID):
+        session_idx = random_opto_df.index[
+            random_opto_df.SessionID == session
+        ].item()
+        cohort = random_opto_df.loc[session_idx].Genotype
+        ax = axs[mice_cohorts.index(cohort)]
+        st_t_idx = 0
+        sh_d = random_opto_df.loc[session_idx].contralateral_bias
+        imp_jit = random.uniform(-jitter, jitter)
+        x_pos = jit_list[counter]
+        counter += 1
+        if random_opto_df.loc[session_idx].significance_value < .05:
+          # means
+          ax.plot(
+              x_pos,
+              sh_d,
+              "o",
+              ms=14,
+              color="k",
+              markerfacecolor=colors[mice_cohorts.index(cohort)],
+          )
+        else:
+          ax.plot(
+              x_pos,
+              sh_d,
+              "o",
+              ms=14,
+              color=colors[mice_cohorts.index(cohort)],
+              markerfacecolor="white",
+          )
+        # append to list
+        mean_vals[mice_cohorts.index(cohort)].append(sh_d)
+        sessions_used[mice_cohorts.index(cohort)].append(session)
+
+    # plot mean of means next to it, and random distribution, and pvalue
+    pvals = []
+    for i, ax in enumerate(axs):
+        exp_means.append(np.mean(mean_vals[i]))
+
+        # boxplot
+        bp = ax.boxplot(
+            mean_vals[i],
+            positions=[spread],
+            widths=0.07,
+            patch_artist=True,
+            showfliers=False,
+        )
+        for element in [
+            "boxes",
+            "whiskers",
+            "fliers",
+            "means",
+            "medians",
+            "caps",
+        ]:
+            plt.setp(bp[element], color=colors[i], linewidth=3)
+        for patch in bp["boxes"]:
+            patch.set(facecolor="white")
+
+        # random expectation. Mean at 0 by definition.
+        # Use the bias_std to sample from
+        # do one instance only
+        random_means = []
+        for session in sessions_used[i]:
+            # get x number of a random bias
+            sess_std = random_opto_df[
+                random_opto_df.SessionID == session
+            ].bias_std.values
+            random_means.append(
+                np.random.normal(loc=0.0, scale=sess_std[0], size=100)
+            )
+        random_means_flat_list = [
+            item for sublist in random_means for item in sublist
+        ]
+        cont_sds.append(np.std(random_means_flat_list))
+        spr_adj = 1.5
+        bp = ax.boxplot(
+            random_means_flat_list,
+            positions=[spread * spr_adj],
+            widths=0.07,
+            patch_artist=True,
+            showfliers=False,
+        )
+        for element in [
+            "boxes",
+            "whiskers",
+            "fliers",
+            "means",
+            "medians",
+            "caps",
+        ]:
+            plt.setp(bp[element], color="lightgray", linewidth=3)
+        for patch in bp["boxes"]:
+            patch.set(facecolor="white")
+
+        pvals.append(
+            stats.kruskal(mean_vals[i], random_means_flat_list).pvalue
+        )
+
+        # print the cohen's d value for effect size
+        c0 = mean_vals[i]
+        c1 = random_means_flat_list
+        cohens_d = (np.mean(c0) - np.mean(c1)) / (np.sqrt((np.std(c0) ** 2 + np.std(c1) ** 2) / 2))
+        print(f"Cohen's d for {labels_for_legend[i]}: {cohens_d}")
+
+    # add pvalues info
+    hlocs = [20, -20]
+    hadj = [1.2, 1.4]
+
+    for i, ax in enumerate(axs):
+        pvaltext = "{0:.7f}".format(pvals[i])
+        ax.text(
+            x=spread * (1 + spr_adj) / 2,
+            y=hlocs[i] * hadj[i],
+            s="pval {}".format(str(pvaltext)),
+            horizontalalignment="center",
+            fontsize=14,
+        )
+        ax.plot(
+            [spread, spread * spr_adj],
+            [hlocs[i], hlocs[i]],
+            color="k",
+            linewidth=0.5,
+        )
+        ax.plot(
+            [spread, spread],
+            [hlocs[i], hlocs[i] * 0.8],
+            color="k",
+            linewidth=0.5,
+        )
+        ax.plot(
+            [spread * spr_adj, spread * spr_adj],
+            [hlocs[i], hlocs[i] * 0.8],
+            color="k",
+            linewidth=0.5,
+        )
+        ax.set_xticks([])
+
+    return exp_means, cont_sds, fig
+
+
+def make_figure_optoinhibition_after_learning_batch_DEPRECATED(random_opto_df):
 
     jitter = 0.3
     alpha = 1
@@ -732,12 +1008,12 @@ def make_figure_optoinhibition_after_learning_curves(oal_df, random_opto_df):
         ax.spines["right"].set_visible(False)
         ax.spines["top"].set_visible(False)
 
-        # tick text size
-        for tick in ax.yaxis.get_major_ticks():
-            tick.label.set_fontsize(14)
+        # # tick text size
+        # for tick in ax.yaxis.get_major_ticks():
+        #     tick.label.set_fontsize(14)
 
-        for tick in ax.xaxis.get_major_ticks():
-            tick.label.set_fontsize(14)
+        # for tick in ax.xaxis.get_major_ticks():
+        #     tick.label.set_fontsize(14)
 
         # reverse x axis ticks
         ax.set_xticklabels([2, 18, 34, 50, 66, 82, 98][::-1])

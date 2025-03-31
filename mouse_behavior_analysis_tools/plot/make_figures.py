@@ -1246,10 +1246,12 @@ def make_figure_optoinhibition_through_learning(
     )
     # ax.legend()
     for tick in ax.xaxis.get_major_ticks():
-        tick.label.set_fontsize(18)
+        tick.label1.set_fontsize(18)
+        tick.label2.set_fontsize(18)
 
     for tick in ax.yaxis.get_major_ticks():
-        tick.label.set_fontsize(18)
+        tick.label1.set_fontsize(18)
+        tick.label2.set_fontsize(18)
 
     return fig
 
@@ -1260,7 +1262,7 @@ def make_figure_optoinhibition_significant_sessions(sess_df):
         data=sess_df,
         x="performance_window",
         y="proportion_of_significant_sessions",
-        ci=None,
+        errorbar=None,
         ax=ax,
         linewidth=3,
     )
@@ -1291,10 +1293,10 @@ def make_figure_optoinhibition_significant_sessions(sess_df):
 
     # ax.legend()
     for tick in ax.xaxis.get_major_ticks():
-        tick.label.set_fontsize(18)
+        tick.label1.set_fontsize(18)
 
     for tick in ax.yaxis.get_major_ticks():
-        tick.label.set_fontsize(18)
+        tick.label1.set_fontsize(18)
 
     ax.set_xlim(50, 100)
 

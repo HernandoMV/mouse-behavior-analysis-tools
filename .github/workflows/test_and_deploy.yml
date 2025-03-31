@@ -45,7 +45,7 @@ jobs:
   build_sdist_wheels:
     name: Build source distribution
     needs: [test]
-    if: github.event_name == 'push'
+    if: github.event_name == 'push' && github.ref_type == 'tag'
     runs-on: ubuntu-latest
     steps:
     - uses: neuroinformatics-unit/actions/build_sdist_wheels@v2
